@@ -1,16 +1,34 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import { useTestStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
+interface TestSummary {
+  id: string;
+  title: string;
+  timeLimitMinutes: number;
+  code: string;
+  createdAt: string;
+  questionCount: number;
+}
+
 export default function TeacherDashboard() {
-  const { user } = useUser();
-  const tests = useTestStore((s) => s.tests);
-  const teacherTests = tests.filter((t) => t.teacherId === user?.id);
+  const { isLoaded } = useUser();
+  const [tests, setTests] = useState<TestSummary[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    fetch("/api/tests")
+      .then((res) => res.json())
+      .then((data) => setTests(data))
+      .catch(() => setTests([]))
+      .finally(() => setLoading(false));
+  }, [isLoaded]);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
@@ -26,7 +44,11 @@ export default function TeacherDashboard() {
         </Button>
       </div>
 
-      {teacherTests.length === 0 ? (
+      {loading ? (
+        <div className="flex items-center justify-center py-20">
+          <p className="text-muted-foreground">Loading tests...</p>
+        </div>
+      ) : tests.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed py-20 text-center">
           <h3 className="text-lg font-medium">No tests yet</h3>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -38,7 +60,7 @@ export default function TeacherDashboard() {
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {teacherTests.map((test) => (
+          {tests.map((test) => (
             <Card key={test.id}>
               <CardHeader>
                 <CardTitle>{test.title}</CardTitle>
@@ -47,7 +69,7 @@ export default function TeacherDashboard() {
                 </Badge>
               </CardHeader>
               <CardContent className="space-y-1 text-sm text-muted-foreground">
-                <p>{test.questions.length} questions</p>
+                <p>{test.questionCount} questions</p>
                 <p>{test.timeLimitMinutes} min time limit</p>
               </CardContent>
               <CardFooter className="gap-2">

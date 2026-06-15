@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useActiveTestStore, useTestStore, useResultsStore } from "@/lib/store";
+import { useActiveTestStore } from "@/lib/store";
 import { ProgressBar } from "@/components/progress-bar";
 import { QuestionRenderer } from "@/components/question-renderer";
 import { TestTimer } from "@/components/test-timer";
@@ -18,8 +18,7 @@ export default function TakeTestPage() {
   const nextQuestion = useActiveTestStore((s) => s.nextQuestion);
   const prevQuestion = useActiveTestStore((s) => s.prevQuestion);
   const endSession = useActiveTestStore((s) => s.endSession);
-  const getTestByCode = useTestStore((s) => s.getTestByCode);
-  const addResult = useResultsStore((s) => s.addResult);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (!session || session.testCode !== testCode) {
@@ -27,7 +26,7 @@ export default function TakeTestPage() {
     }
   }, [session, testCode, router]);
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     if (!session) return;
 
     const unanswered = session.questions.filter(
@@ -40,47 +39,60 @@ export default function TakeTestPage() {
       return;
     }
 
-    const test = getTestByCode(testCode);
-    if (!test) return;
+    setSubmitting(true);
 
-    addResult({
-      testId: test.id,
-      testTitle: test.title,
-      studentName: session.studentName,
-      answers: Object.entries(session.answers).map(([questionId, answer]) => ({
-        questionId,
-        answer,
-      })),
-      questions: test.questions,
-      teacherId: test.teacherId,
-    });
+    try {
+      const res = await fetch("/api/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          testCode,
+          studentName: session.studentName,
+          answers: Object.entries(session.answers).map(([questionId, answer]) => ({
+            questionId,
+            answer,
+          })),
+        }),
+      });
 
-    endSession();
-    toast.success("Test submitted successfully!");
-    router.push("/student/results");
-  }, [session, testCode, getTestByCode, addResult, endSession, router]);
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error ?? "Failed to submit");
+      }
 
-  const handleExpire = useCallback(() => {
+      endSession();
+      toast.success("Test submitted successfully!");
+      router.push("/student/results");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to submit test");
+      setSubmitting(false);
+    }
+  }, [session, testCode, endSession, router]);
+
+  const handleExpire = useCallback(async () => {
     if (!session) return;
-    const test = getTestByCode(testCode);
-    if (!test) return;
 
-    addResult({
-      testId: test.id,
-      testTitle: test.title,
-      studentName: session.studentName,
-      answers: Object.entries(session.answers).map(([questionId, answer]) => ({
-        questionId,
-        answer,
-      })),
-      questions: test.questions,
-      teacherId: test.teacherId,
-    });
+    try {
+      await fetch("/api/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          testCode,
+          studentName: session.studentName,
+          answers: Object.entries(session.answers).map(([questionId, answer]) => ({
+            questionId,
+            answer,
+          })),
+        }),
+      });
+    } catch {
+      // submission attempted, proceed anyway
+    }
 
     endSession();
     toast.error("Time's up! Your test has been auto-submitted.");
     router.push("/student/results");
-  }, [session, testCode, getTestByCode, addResult, endSession, router]);
+  }, [session, testCode, endSession, router]);
 
   if (!session) return null;
 
@@ -100,7 +112,6 @@ export default function TakeTestPage() {
 
   return (
     <div className="mx-auto flex min-h-[calc(100vh-3.5rem)] max-w-6xl flex-col px-4 py-6 sm:px-6">
-      {/* Header Bar: progress + timer */}
       <div className="mb-6 flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
           {session.testTitle}
@@ -124,9 +135,7 @@ export default function TakeTestPage() {
         {answeredCount} of {total} answered
       </div>
 
-      {/* Split Layout */}
       <div className="flex flex-1 gap-8">
-        {/* Left: Question text (fixed) */}
         <div className="w-1/2">
           <div className="sticky top-20 rounded-2xl border bg-card p-6">
             <div className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -138,7 +147,6 @@ export default function TakeTestPage() {
           </div>
         </div>
 
-        {/* Right: Answer input */}
         <div className="flex w-1/2 flex-col">
           <div className="rounded-2xl border bg-card p-6">
             <div className="mb-4 text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -157,7 +165,6 @@ export default function TakeTestPage() {
 
       <Separator className="my-6" />
 
-      {/* Navigation */}
       <div className="flex items-center justify-between">
         <Button
           variant="outline"
@@ -171,7 +178,9 @@ export default function TakeTestPage() {
           {!isLast ? (
             <Button onClick={nextQuestion}>Next</Button>
           ) : (
-            <Button onClick={handleSubmit}>Submit Test</Button>
+            <Button onClick={handleSubmit} disabled={submitting}>
+              {submitting ? "Submitting..." : "Submit Test"}
+            </Button>
           )}
         </div>
       </div>

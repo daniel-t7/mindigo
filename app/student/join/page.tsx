@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTestStore, useActiveTestStore } from "@/lib/store";
+import { useActiveTestStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,13 +11,12 @@ import { toast } from "sonner";
 
 export default function JoinTestPage() {
   const router = useRouter();
-  const getTestByCode = useTestStore((s) => s.getTestByCode);
   const startSession = useActiveTestStore((s) => s.startSession);
   const [code, setCode] = useState("");
   const [studentName, setStudentName] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function handleJoin(e: React.FormEvent) {
+  async function handleJoin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
 
@@ -34,15 +33,21 @@ export default function JoinTestPage() {
       return;
     }
 
-    const test = getTestByCode(normalized);
-    if (!test) {
-      toast.error("Test not found. Check the code and try again.");
-      setLoading(false);
-      return;
-    }
+    try {
+      const res = await fetch(`/api/tests/code/${normalized}`);
+      if (!res.ok) {
+        toast.error("Test not found. Check the code and try again.");
+        setLoading(false);
+        return;
+      }
 
-    startSession(test, studentName.trim());
-    router.push(`/student/test/${normalized}`);
+      const test = await res.json();
+      startSession(test, studentName.trim());
+      router.push(`/student/test/${normalized}`);
+    } catch {
+      toast.error("Failed to look up test. Please try again.");
+      setLoading(false);
+    }
   }
 
   return (

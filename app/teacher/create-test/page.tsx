@@ -2,9 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
-import type { Question, QuestionType } from "@/lib/store";
-import { useTestStore } from "@/lib/store";
+import type { QuestionType } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -40,11 +38,10 @@ function freshQuestion(): QuestionForm {
 
 export default function CreateTestPage() {
   const router = useRouter();
-  const { user } = useUser();
-  const addTest = useTestStore((s) => s.addTest);
   const [title, setTitle] = useState("");
   const [timeLimitMinutes, setTimeLimitMinutes] = useState(30);
   const [questions, setQuestions] = useState<QuestionForm[]>([freshQuestion()]);
+  const [saving, setSaving] = useState(false);
 
   function addQuestion() {
     setQuestions((prev) => [...prev, freshQuestion()]);
@@ -86,7 +83,7 @@ export default function CreateTestPage() {
     );
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     if (!title.trim()) {
@@ -114,7 +111,9 @@ export default function CreateTestPage() {
       }
     }
 
-    const mapped: Question[] = questions.map((q) => ({
+    setSaving(true);
+
+    const mapped = questions.map((q) => ({
       id: q.id,
       type: q.type,
       text: q.text,
@@ -126,15 +125,29 @@ export default function CreateTestPage() {
       correctAnswer: q.correctAnswer,
     }));
 
-    const test = addTest({
-      title: title.trim(),
-      timeLimitMinutes,
-      questions: mapped,
-      teacherId: user?.id ?? "unknown",
-    });
+    try {
+      const res = await fetch("/api/tests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title.trim(),
+          timeLimitMinutes,
+          questions: mapped,
+        }),
+      });
 
-    toast.success(`Test created! Code: ${test.code}`);
-    router.push("/teacher/dashboard");
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error ?? "Failed to create test");
+      }
+
+      const test = await res.json();
+      toast.success(`Test created! Code: ${test.code}`);
+      router.push("/teacher/dashboard");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to create test");
+      setSaving(false);
+    }
   }
 
   return (
@@ -319,7 +332,9 @@ export default function CreateTestPage() {
           <Button type="button" variant="outline" onClick={() => router.back()}>
             Cancel
           </Button>
-          <Button type="submit">Create Test</Button>
+          <Button type="submit" disabled={saving}>
+            {saving ? "Creating..." : "Create Test"}
+          </Button>
         </div>
       </form>
     </div>
