@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { UserButton, useUser } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import { Button } from "@/components/ui/button";
 import ThemeSwitch from "@/components/ui/theme-switch";
+import { useTheme } from "@/components/theme-provider";
 
 export function AppHeader() {
   const { user } = useUser();
+  const { resolvedTheme } = useTheme();
   const role = user?.publicMetadata?.role as string | undefined;
 
   return (
@@ -47,7 +50,7 @@ export function AppHeader() {
               </Button>
             </div>
           )}
-          {user && <UserButton />}
+          {user && <UserButton appearance={resolvedTheme === "dark" ? dark : undefined} />}
         </div>
       </div>
     </header>

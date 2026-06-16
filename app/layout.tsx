@@ -3,8 +3,9 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -43,10 +44,11 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <body className="min-h-full flex flex-col">
+          <Script id="theme-init" strategy="beforeInteractive">
+            {`try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&matchMedia("(prefers-color-scheme:dark)").matches))document.documentElement.classList.add("dark")}catch(e){}`}
+          </Script>
           <ThemeProvider
-            attribute="class"
             defaultTheme="system"
-            enableSystem
             disableTransitionOnChange
           >
             {children}

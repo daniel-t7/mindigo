@@ -22,7 +22,7 @@ export const questions = sqliteTable('questions', {
 
 export const submissions = sqliteTable('submissions', {
     id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
-    testId: text('test_id').notNull().references(() => tests.id),
+    testId: text('test_id').notNull().references(() => tests.id, { onDelete: 'cascade' }),
     studentName: text('student_name').notNull(),
     score: integer('score').notNull(),
     totalQuestions: integer('total_questions').notNull(),
@@ -33,7 +33,7 @@ export const submissions = sqliteTable('submissions', {
 export const answers = sqliteTable('answers', {
     id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
     submissionId: text('submission_id').notNull().references(() => submissions.id, { onDelete: 'cascade' }),
-    questionId: text('question_id').notNull().references(() => questions.id),
+    questionId: text('question_id').notNull().references(() => questions.id, { onDelete: 'cascade' }),
     answer: text('answer').notNull(),
 });
 
