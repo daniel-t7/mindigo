@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useActiveTestStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 
 function JoinForm() {
+  const t = useTranslations("student.join");
   const router = useRouter();
   const searchParams = useSearchParams();
   const startSession = useActiveTestStore((s) => s.startSession);
@@ -23,13 +25,13 @@ function JoinForm() {
 
     const normalized = code.trim().toUpperCase();
     if (!normalized) {
-      toast.error("Please enter a test code");
+      toast.error(t("toastMissingCode"));
       setLoading(false);
       return;
     }
 
     if (!studentName.trim()) {
-      toast.error("Please enter your name");
+      toast.error(t("toastMissingName"));
       setLoading(false);
       return;
     }
@@ -37,7 +39,7 @@ function JoinForm() {
     try {
       const res = await fetch(`/api/tests/code/${normalized}`);
       if (!res.ok) {
-        toast.error("Test not found. Check the code and try again.");
+        toast.error(t("toastNotFound"));
         setLoading(false);
         return;
       }
@@ -46,7 +48,7 @@ function JoinForm() {
       startSession(test, studentName.trim());
       router.push(`/student/test/${normalized}`);
     } catch {
-      toast.error("Failed to look up test. Please try again.");
+      toast.error(t("toastFailed"));
       setLoading(false);
     }
   }
@@ -55,32 +57,32 @@ function JoinForm() {
     <div className="flex flex-1 items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-xl">Join a Test</CardTitle>
+          <CardTitle className="text-xl">{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleJoin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="code">Test Code</Label>
+              <Label htmlFor="code">{t("testCode")}</Label>
               <Input
                 id="code"
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase())}
-                placeholder="e.g. ABC123"
+                placeholder={t("codePlaceholder")}
                 className="text-center text-lg font-mono tracking-widest uppercase"
                 maxLength={6}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="name">Your Name</Label>
+              <Label htmlFor="name">{t("yourName")}</Label>
               <Input
                 id="name"
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
-                placeholder="Enter your full name"
+                placeholder={t("namePlaceholder")}
               />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Joining..." : "Start Test"}
+              {loading ? t("joining") : t("startTest")}
             </Button>
           </form>
         </CardContent>
@@ -90,8 +92,9 @@ function JoinForm() {
 }
 
 export default function JoinTestPage() {
+  const t = useTranslations("student.join");
   return (
-    <Suspense fallback={<div className="flex flex-1 items-center justify-center p-4"><p className="text-muted-foreground">Loading...</p></div>}>
+    <Suspense fallback={<div className="flex flex-1 items-center justify-center p-4"><p className="text-muted-foreground">{t("loading")}</p></div>}>
       <JoinForm />
     </Suspense>
   );

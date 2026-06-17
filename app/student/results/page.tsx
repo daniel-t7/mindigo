@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useActiveTestStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -50,6 +51,7 @@ function computeGrade(earned: number, total: number, formulaJson: string | null)
 }
 
 export default function StudentResultsPage() {
+  const t = useTranslations("student.results");
   const router = useRouter();
   const session = useActiveTestStore((s) => s.session);
   const [result, setResult] = useState<ResultData | null | "fetching">("fetching");
@@ -77,16 +79,16 @@ export default function StudentResultsPage() {
     if (!session) {
       return (
         <div className="flex flex-col items-center justify-center py-20">
-          <h2 className="text-lg font-medium">No active session</h2>
+          <h2 className="text-lg font-medium">{t("noSession")}</h2>
           <Button className="mt-4" onClick={() => router.push("/student/join")}>
-            Join a Test
+            {t("joinTest")}
           </Button>
         </div>
       );
     }
     return (
       <div className="flex items-center justify-center py-20">
-        <p className="text-muted-foreground">Loading results...</p>
+        <p className="text-muted-foreground">{t("loading")}</p>
       </div>
     );
   }
@@ -94,9 +96,9 @@ export default function StudentResultsPage() {
   if (!result) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <h2 className="text-lg font-medium">No results found</h2>
+        <h2 className="text-lg font-medium">{t("noResults")}</h2>
         <Button className="mt-4" onClick={() => router.push("/student/join")}>
-          Join Another Test
+          {t("joinAnotherTest")}
         </Button>
       </div>
     );
@@ -114,9 +116,10 @@ export default function StudentResultsPage() {
           {result.testTitle}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Submitted on{" "}
-          {new Date(result.submittedAt).toLocaleDateString(undefined, {
-            dateStyle: "long",
+          {t("submittedOn", {
+            date: new Date(result.submittedAt).toLocaleDateString(undefined, {
+              dateStyle: "long",
+            }),
           })}
         </p>
       </div>
@@ -125,11 +128,11 @@ export default function StudentResultsPage() {
         <CardContent className="flex flex-col items-center py-10">
           <div className="text-5xl font-bold">{percentage}%</div>
           <div className="mt-2 text-lg text-muted-foreground">
-            {result.score} / {result.totalQuestions} points
+            {t("points", { score: result.score, totalQuestions: result.totalQuestions })}
           </div>
           {grade && (
             <Badge className="mt-3 text-lg px-4 py-1">
-              Grade: {grade}
+              {t("grade", { grade })}
             </Badge>
           )}
           <Badge
@@ -143,31 +146,31 @@ export default function StudentResultsPage() {
             className="mt-3 text-sm"
           >
             {percentage >= 80
-              ? "Excellent!"
+              ? t("excellent")
               : percentage >= 60
-                ? "Good Job!"
+                ? t("goodJob")
                 : percentage >= 40
-                  ? "Keep Practicing"
-                  : "Needs Improvement"}
+                  ? t("keepPracticing")
+                  : t("needsImprovement")}
           </Badge>
         </CardContent>
       </Card>
 
       <div className="space-y-3">
-        <h2 className="text-lg font-semibold">Answer Review</h2>
+        <h2 className="text-lg font-semibold">{t("answerReview")}</h2>
         {result.answers.map((answer, idx) => (
           <Card key={answer.questionId}>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">
-                  Q{idx + 1}: {answer.questionText}
+                  {t("questionLabel", { n: idx + 1, text: answer.questionText })}
                 </CardTitle>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-muted-foreground">
-                    {answer.points} pt{answer.points !== 1 ? "s" : ""}
+                    {t("pts", { count: answer.points })}
                   </span>
                   <Badge variant={answer.isCorrect ? "default" : "destructive"}>
-                    {answer.isCorrect ? "Correct" : "Incorrect"}
+                    {answer.isCorrect ? t("correct") : t("incorrect")}
                   </Badge>
                 </div>
               </div>
@@ -190,23 +193,11 @@ export default function StudentResultsPage() {
                 />
               )}
               <p>
-                Your answer:{" "}
-                <span
-                  className={
-                    answer.isCorrect
-                      ? "text-green-600 dark:text-green-400"
-                      : "text-destructive"
-                  }
-                >
-                  {answer.answer || "(no answer)"}
-                </span>
+                {t("yourAnswer", { answer: answer.answer || t("noAnswer") })}
               </p>
               {!answer.isCorrect && (
                 <p>
-                  Correct answer:{" "}
-                  <span className="text-green-600 dark:text-green-400">
-                    {answer.correctAnswer}
-                  </span>
+                  {t("correctAnswer", { answer: answer.correctAnswer })}
                 </p>
               )}
             </CardContent>
@@ -216,7 +207,7 @@ export default function StudentResultsPage() {
 
       <div className="mt-8 flex justify-center gap-3">
         <Button variant="outline" onClick={() => router.push("/student/join")}>
-          Join Another Test
+          {t("joinAnotherTest")}
         </Button>
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type { QuestionType, GradeThreshold } from "@/lib/store";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -65,6 +66,7 @@ const CODE_LANGUAGES = [
 ];
 
 export default function EditTestPage() {
+  const t = useTranslations("teacher.editTest");
   const { testId } = useParams<{ testId: string }>();
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -136,11 +138,11 @@ export default function EditTestPage() {
         );
       })
       .catch(() => {
-        toast.error("Test not found");
+        toast.error(t("toastNotFound"));
         router.push("/teacher/dashboard");
       })
       .finally(() => setLoading(false));
-  }, [testId, router]);
+  }, [testId, router, t]);
 
   function addQuestion() {
     setQuestions((prev) => [...prev, freshQuestion()]);
@@ -186,26 +188,26 @@ export default function EditTestPage() {
     e.preventDefault();
 
     if (!title.trim()) {
-      toast.error("Please enter a test title");
+      toast.error(t("toastMissingTitle"));
       return;
     }
 
     if (questions.length === 0) {
-      toast.error("Please add at least one question");
+      toast.error(t("toastMissingQuestion"));
       return;
     }
 
     for (const q of questions) {
       if (!q.text.trim()) {
-        toast.error("Each question needs text");
+        toast.error(t("toastMissingText"));
         return;
       }
       if ((q.type === "multiple-choice" || q.type === "true-false") && !q.correctAnswer) {
-        toast.error("Each question needs a correct answer selected");
+        toast.error(t("toastMissingCorrectAnswer"));
         return;
       }
       if (q.type === "open" && !q.correctAnswer.trim()) {
-        toast.error("Each open question needs a model answer");
+        toast.error(t("toastMissingModelAnswer"));
         return;
       }
     }
@@ -249,10 +251,10 @@ export default function EditTestPage() {
         throw new Error(err.error ?? "Failed to save test");
       }
 
-      toast.success("Test saved");
+      toast.success(t("toastSaved"));
       router.push("/teacher/dashboard");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to save test");
+      toast.error(err instanceof Error ? err.message : t("toastFailed"));
       setSaving(false);
     }
   }
@@ -260,32 +262,32 @@ export default function EditTestPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <p className="text-muted-foreground">Loading test...</p>
+        <p className="text-muted-foreground">{t("loading")}</p>
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
-      <h1 className="mb-8 text-2xl font-bold tracking-tight">Edit Test</h1>
+      <h1 className="mb-8 text-2xl font-bold tracking-tight">{t("title")}</h1>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <Card>
           <CardHeader>
-            <CardTitle>Test Details</CardTitle>
+            <CardTitle>{t("testDetails")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="title">Test Title</Label>
+              <Label htmlFor="title">{t("testTitle")}</Label>
               <Input
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Midterm Exam"
+                placeholder={t("titlePlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="time-limit">Time Limit (minutes)</Label>
+              <Label htmlFor="time-limit">{t("timeLimit")}</Label>
               <Input
                 id="time-limit"
                 type="number"
@@ -299,16 +301,16 @@ export default function EditTestPage() {
             <div className="flex items-center gap-3 rounded-lg border p-3">
               <Switch id="is-public" checked={isPublic} onCheckedChange={setIsPublic} />
               <Label htmlFor="is-public" className="cursor-pointer">
-                Make this test publicly searchable
+                {t("publicSwitch")}
               </Label>
             </div>
 
             <Separator />
 
             <div className="space-y-3">
-              <Label>Scoring Formula (optional)</Label>
+              <Label>{t("scoringFormula")}</Label>
               <p className="text-xs text-muted-foreground">
-                Define grade thresholds based on total points earned.
+                {t("scoringDescription")}
               </p>
               <div className="space-y-2">
                 {scoringFormula.map((threshold, idx) => (
@@ -321,15 +323,15 @@ export default function EditTestPage() {
                       onChange={(e) =>
                         updateThreshold(idx, "minPoints", Number(e.target.value))
                       }
-                      placeholder="Min"
+                      placeholder={t("min")}
                     />
-                    <span className="text-xs text-muted-foreground">pts</span>
+                    <span className="text-xs text-muted-foreground">{t("pts")}</span>
                     <Input
                       value={threshold.label}
                       onChange={(e) =>
                         updateThreshold(idx, "label", e.target.value)
                       }
-                      placeholder="Grade label (e.g. A, B, C...)"
+                      placeholder={t("gradeLabelPlaceholder")}
                       className="flex-1"
                     />
                     {scoringFormula.length > 1 && (
@@ -351,7 +353,7 @@ export default function EditTestPage() {
                 size="sm"
                 onClick={addThreshold}
               >
-                Add Threshold
+                {t("addThreshold")}
               </Button>
             </div>
           </CardContent>
@@ -359,16 +361,16 @@ export default function EditTestPage() {
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Questions</h2>
+            <h2 className="text-lg font-semibold">{t("questions")}</h2>
             <Button type="button" variant="outline" onClick={addQuestion}>
-              Add Question
+              {t("addQuestion")}
             </Button>
           </div>
 
           {questions.map((question, idx) => (
             <Card key={question.id}>
               <CardHeader className="flex flex-row items-start justify-between">
-                <CardTitle>Question {idx + 1}</CardTitle>
+                <CardTitle>{t("questionTitle", { n: idx + 1 })}</CardTitle>
                 {questions.length > 1 && (
                   <Button
                     type="button"
@@ -376,14 +378,14 @@ export default function EditTestPage() {
                     size="sm"
                     onClick={() => removeQuestion(question.id)}
                   >
-                    Remove
+                    {t("remove")}
                   </Button>
                 )}
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex gap-4">
                   <div className="flex-1 space-y-2">
-                    <Label>Question Type</Label>
+                    <Label>{t("questionType")}</Label>
                     <Select
                       value={question.type}
                       onValueChange={(v: QuestionType) =>
@@ -394,14 +396,14 @@ export default function EditTestPage() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
-                        <SelectItem value="true-false">True / False</SelectItem>
-                        <SelectItem value="open">Open Answer</SelectItem>
+                        <SelectItem value="multiple-choice">{t("multipleChoice")}</SelectItem>
+                        <SelectItem value="true-false">{t("trueFalse")}</SelectItem>
+                        <SelectItem value="open">{t("openAnswer")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="w-24 space-y-2">
-                    <Label>Points</Label>
+                    <Label>{t("points")}</Label>
                     <Input
                       type="number"
                       min={1}
@@ -414,31 +416,31 @@ export default function EditTestPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Question Text</Label>
+                  <Label>{t("questionText")}</Label>
                   <Textarea
                     value={question.text}
                     onChange={(e) =>
                       updateQuestion(question.id, "text", e.target.value)
                     }
-                    placeholder="Enter the question..."
+                    placeholder={t("questionPlaceholder")}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Image URL (optional)</Label>
+                  <Label>{t("imageUrl")}</Label>
                   <Input
                     value={question.imageUrl}
                     onChange={(e) =>
                       updateQuestion(question.id, "imageUrl", e.target.value)
                     }
-                    placeholder="https://example.com/image.png"
+                    placeholder={t("imagePlaceholder")}
                   />
                   {question.imageUrl && (
                     <div className="relative mt-2 overflow-hidden rounded-lg border">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={question.imageUrl}
-                        alt="Preview"
+                        alt={t("imageAlt")}
                         className="max-h-48 w-full object-contain"
                         onError={(e) => {
                           (e.target as HTMLImageElement).style.display = "none";
@@ -449,7 +451,7 @@ export default function EditTestPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Code Block (optional)</Label>
+                  <Label>{t("codeBlock")}</Label>
                   <div className="flex gap-2">
                     <Select
                       value={question.codeLanguage}
@@ -458,7 +460,7 @@ export default function EditTestPage() {
                       }
                     >
                       <SelectTrigger className="w-40">
-                        <SelectValue placeholder="Language" />
+                        <SelectValue placeholder={t("language")} />
                       </SelectTrigger>
                       <SelectContent>
                         {CODE_LANGUAGES.map((lang) => (
@@ -478,7 +480,7 @@ export default function EditTestPage() {
                           updateQuestion(question.id, "codeCode", "");
                         }}
                       >
-                        Remove
+                        {t("remove")}
                       </Button>
                     )}
                   </div>
@@ -488,7 +490,7 @@ export default function EditTestPage() {
                       onChange={(e) =>
                         updateQuestion(question.id, "codeCode", e.target.value)
                       }
-                      placeholder={`Paste your ${question.codeLanguage} code here...`}
+                      placeholder={t("codePlaceholder", { language: question.codeLanguage })}
                       className="min-h-[100px] font-mono text-sm"
                     />
                   )}
@@ -496,13 +498,13 @@ export default function EditTestPage() {
 
                 {(question.type === "multiple-choice") && (
                   <div className="space-y-3">
-                    <Label>Answer Options</Label>
+                    <Label>{t("answerOptions")}</Label>
                     {question.options.map((option, optIdx) => (
                       <div key={optIdx} className="flex items-center gap-2">
                         <Input
                           value={option}
                           onChange={(e) => updateOption(question.id, optIdx, e.target.value)}
-                          placeholder={`Option ${optIdx + 1}`}
+                          placeholder={t("optionPlaceholder", { n: optIdx + 1 })}
                         />
                         {question.options.length > 2 && (
                           <Button
@@ -522,11 +524,11 @@ export default function EditTestPage() {
                       size="sm"
                       onClick={() => addOption(question.id)}
                     >
-                      Add Option
+                      {t("addOption")}
                     </Button>
                     <Separator />
                     <div className="space-y-2">
-                      <Label>Correct Answer</Label>
+                      <Label>{t("correctAnswer")}</Label>
                       <Select
                         value={question.correctAnswer}
                         onValueChange={(v) =>
@@ -534,7 +536,7 @@ export default function EditTestPage() {
                         }
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select correct answer" />
+                          <SelectValue placeholder={t("selectCorrectAnswer")} />
                         </SelectTrigger>
                         <SelectContent>
                           {question.options.filter((o) => o.trim()).map((opt, optIdx) => (
@@ -550,7 +552,7 @@ export default function EditTestPage() {
 
                 {question.type === "true-false" && (
                   <div className="space-y-2">
-                    <Label>Correct Answer</Label>
+                    <Label>{t("correctAnswer")}</Label>
                     <Select
                       value={question.correctAnswer}
                       onValueChange={(v) =>
@@ -558,11 +560,11 @@ export default function EditTestPage() {
                       }
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select correct answer" />
+                        <SelectValue placeholder={t("selectCorrectAnswer")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="True">True</SelectItem>
-                        <SelectItem value="False">False</SelectItem>
+                        <SelectItem value="True">{t("true")}</SelectItem>
+                        <SelectItem value="False">{t("false")}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -570,13 +572,13 @@ export default function EditTestPage() {
 
                 {question.type === "open" && (
                   <div className="space-y-2">
-                    <Label>Model Answer (for grading)</Label>
+                    <Label>{t("modelAnswer")}</Label>
                     <Textarea
                       value={question.correctAnswer}
                       onChange={(e) =>
                         updateQuestion(question.id, "correctAnswer", e.target.value)
                       }
-                      placeholder="Enter the expected correct answer..."
+                      placeholder={t("modelAnswerPlaceholder")}
                     />
                   </div>
                 )}
@@ -587,10 +589,10 @@ export default function EditTestPage() {
 
         <div className="flex justify-end gap-3">
           <Button type="button" variant="outline" onClick={() => router.push("/teacher/dashboard")}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button type="submit" disabled={saving}>
-            {saving ? "Saving..." : "Save Changes"}
+            {saving ? t("saving") : t("saveChanges")}
           </Button>
         </div>
       </form>

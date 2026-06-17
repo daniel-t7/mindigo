@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -59,6 +60,7 @@ interface TestInfo {
 }
 
 export default function TestResultsPage() {
+  const t = useTranslations("teacher.results");
   const { testId } = useParams<{ testId: string }>();
   const router = useRouter();
   const { isLoaded } = useUser();
@@ -85,7 +87,7 @@ export default function TestResultsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <p className="text-muted-foreground">Loading...</p>
+        <p className="text-muted-foreground">{t("loading")}</p>
       </div>
     );
   }
@@ -93,9 +95,9 @@ export default function TestResultsPage() {
   if (!test) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <h2 className="text-lg font-medium">Test not found</h2>
+        <h2 className="text-lg font-medium">{t("notFound")}</h2>
         <Button className="mt-4" onClick={() => router.push("/teacher/dashboard")}>
-          Back to Dashboard
+          {t("backToDashboard")}
         </Button>
       </div>
     );
@@ -111,19 +113,19 @@ export default function TestResultsPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">{test.title}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Code: {test.code} &middot; {test.timeLimitMinutes} min
+            {t("testInfo", { code: test.code, minutes: test.timeLimitMinutes })}
           </p>
         </div>
         <Button variant="outline" onClick={() => router.push("/teacher/dashboard")}>
-          Back to Dashboard
+          {t("backToDashboard")}
         </Button>
       </div>
 
       {submissions.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed py-20 text-center">
-          <h3 className="text-lg font-medium">No results yet</h3>
+          <h3 className="text-lg font-medium">{t("noResults")}</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Students haven&apos;t submitted any results for this test.
+            {t("noResultsDescription")}
           </p>
         </div>
       ) : selectedSubmission ? (
@@ -133,7 +135,7 @@ export default function TestResultsPage() {
             className="mb-4"
             onClick={() => setSelectedStudent(null)}
           >
-            &larr; Back to all students
+            {t("backToAllStudents")}
           </Button>
 
           <Card>
@@ -149,7 +151,7 @@ export default function TestResultsPage() {
                   const grade = computeGrade(selectedSubmission.score, selectedSubmission.totalQuestions, test.scoringFormula);
                   return grade ? (
                     <Badge className="text-sm px-3 py-1">
-                      Grade: {grade}
+                      {t("grade", { grade })}
                     </Badge>
                   ) : null;
                 })()}
@@ -173,18 +175,18 @@ export default function TestResultsPage() {
               <Separator />
 
               <div className="space-y-3">
-                <h4 className="text-sm font-medium">Answer Breakdown</h4>
+                <h4 className="text-sm font-medium">{t("answerBreakdown")}</h4>
                 {selectedSubmission.answers.map((answer, idx) => (
                   <div key={answer.questionId} className="rounded-lg border p-3">
                     <div className="mb-1 flex items-center justify-between">
                       <span className="text-sm font-medium">
-                        Q{idx + 1}: {answer.questionText}
+                        {t("questionLabel", { n: idx + 1, text: answer.questionText })}
                       </span>
                       <span className="text-xs text-muted-foreground">
-                        {answer.points} pt{answer.points !== 1 ? "s" : ""}
+                        {t("pts", { count: answer.points })}
                       </span>
                       <Badge variant={answer.isCorrect ? "default" : "destructive"}>
-                        {answer.isCorrect ? "Correct" : "Incorrect"}
+                        {answer.isCorrect ? t("correct") : t("incorrect")}
                       </Badge>
                     </div>
                     <div className="space-y-3 text-sm text-muted-foreground">
@@ -206,23 +208,11 @@ export default function TestResultsPage() {
                       )}
                       <div>
                         <p>
-                          Student answer:{" "}
-                          <span
-                            className={
-                              answer.isCorrect
-                                ? "text-green-600 dark:text-green-400"
-                                : "text-destructive"
-                            }
-                          >
-                            {answer.answer || "(no answer)"}
-                          </span>
+                          {t("studentAnswer", { answer: answer.answer || t("noAnswer") })}
                         </p>
                         {!answer.isCorrect && (
                           <p>
-                            Correct answer:{" "}
-                            <span className="text-green-600 dark:text-green-400">
-                              {answer.correctAnswer}
-                            </span>
+                            {t("correctAnswer", { answer: answer.correctAnswer })}
                           </p>
                         )}
                       </div>
@@ -236,8 +226,7 @@ export default function TestResultsPage() {
       ) : (
         <div className="space-y-2">
           <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="font-medium text-foreground">{submissions.length}</span>
-            submission{submissions.length !== 1 ? "s" : ""}
+            <span className="font-medium text-foreground">{t("submissions", { count: submissions.length })}</span>
           </div>
 
           {submissions.map((sub) => (

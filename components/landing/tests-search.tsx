@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Search, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ interface SearchResult {
 }
 
 export function TestsSearch() {
+  const t = useTranslations("landing.testsSearch");
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -57,10 +59,10 @@ export function TestsSearch() {
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Find a Test
+            {t("heading")}
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Search publicly available tests by title or code.
+            {t("description")}
           </p>
         </div>
 
@@ -69,7 +71,7 @@ export function TestsSearch() {
           <Input
             value={query}
             onChange={(e) => handleChange(e.target.value)}
-            placeholder="Search by test title or code..."
+            placeholder={t("placeholder")}
             className="h-12 pl-11 pr-11 text-base"
           />
           {searching && (
@@ -81,7 +83,7 @@ export function TestsSearch() {
           <div className="mt-8 space-y-3">
             {results.length === 0 ? (
               <p className="text-center text-sm text-muted-foreground">
-                No public tests found for &ldquo;{query}&rdquo;
+                {t("noResults", { query })}
               </p>
             ) : (
               results.map((test) => (
@@ -90,14 +92,14 @@ export function TestsSearch() {
                     <div>
                       <h3 className="font-semibold">{test.title}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Code: {test.code} &middot; {test.timeLimitMinutes} min
+                        {t("code")}: {test.code} &middot; {test.timeLimitMinutes} {t("min")}
                       </p>
                     </div>
                     <Button
                       size="sm"
                       onClick={() => router.push(`/student/join?code=${test.code}`)}
                     >
-                      Join Test
+                      {t("joinTest")}
                     </Button>
                   </CardContent>
                 </Card>

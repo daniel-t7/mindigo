@@ -1,23 +1,13 @@
 "use client";
 
 import AutoScroll from "embla-carousel-auto-scroll";
+import { useTranslations } from "next-intl";
 
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-
-const schools = [
-  "Springfield High",
-  "Riverside Academy",
-  "Tech Valley College",
-  "Brighton Institute",
-  "Summit University",
-  "Oakwood Prep",
-  "Metro State",
-  "Crestwood School",
-];
 
 function getInitials(name: string): string {
   return name
@@ -39,15 +29,19 @@ const badgeColors = [
 ];
 
 const ClientsCarousel = ({
-  heading = "Trusted by educators at",
+  heading,
 }: {
   heading?: string;
 }) => {
+  const t = useTranslations("landing.clients");
+  const schools = t.raw("schools") as string[];
+  const displayHeading = heading ?? t("heading");
+
   return (
     <section className="border-b py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <p className="mb-8 text-center text-xs font-medium uppercase tracking-widest text-muted-foreground">
-          {heading}
+          {displayHeading}
         </p>
         <div className="relative mx-auto max-w-5xl">
           <Carousel

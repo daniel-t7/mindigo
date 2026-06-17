@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useActiveTestStore } from "@/lib/store";
 import { ProgressBar } from "@/components/progress-bar";
 import { QuestionRenderer } from "@/components/question-renderer";
@@ -12,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 
 export default function TakeTestPage() {
+  const t = useTranslations("student.test");
   const { testCode } = useParams<{ testCode: string }>();
   const router = useRouter();
   const session = useActiveTestStore((s) => s.session);
@@ -34,9 +36,7 @@ export default function TakeTestPage() {
       (q) => !session.answers[q.id],
     );
     if (unanswered.length > 0) {
-      toast.error(
-        `You have ${unanswered.length} unanswered question${unanswered.length > 1 ? "s" : ""}. Please review before submitting.`,
-      );
+      toast.error(t("toastUnanswered", { count: unanswered.length }));
       return;
     }
 
@@ -62,13 +62,13 @@ export default function TakeTestPage() {
       }
 
       endSession();
-      toast.success("Test submitted successfully!");
+      toast.success(t("toastSubmitted"));
       router.push("/student/results");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to submit test");
+      toast.error(err instanceof Error ? err.message : t("toastFailed"));
       setSubmitting(false);
     }
-  }, [session, testCode, endSession, router]);
+  }, [session, testCode, endSession, router, t]);
 
   const handleExpire = useCallback(async () => {
     if (!session) return;
@@ -91,9 +91,9 @@ export default function TakeTestPage() {
     }
 
     endSession();
-    toast.error("Time's up! Your test has been auto-submitted.");
+    toast.error(t("toastTimeUp"));
     router.push("/student/results");
-  }, [session, testCode, endSession, router]);
+  }, [session, testCode, endSession, router, t]);
 
   if (!session) return null;
 
@@ -133,7 +133,7 @@ export default function TakeTestPage() {
       </div>
 
       <div className="mb-4 text-center text-sm text-muted-foreground">
-        {answeredCount} of {total} answered
+        {t("answeredCount", { answeredCount, total })}
       </div>
 
       <div className="flex flex-1 gap-8">
@@ -142,10 +142,10 @@ export default function TakeTestPage() {
             <div className="rounded-2xl border bg-card p-6">
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Question {currentIndex + 1} of {total}
+                  {t("questionLabel", { n: currentIndex + 1, total })}
                 </span>
                 <span className="text-xs font-medium text-muted-foreground">
-                  {currentQuestion?.points ?? 1} pt{currentQuestion?.points !== 1 ? "s" : ""}
+                  {t("pts", { count: currentQuestion?.points ?? 1 })}
                 </span>
               </div>
               <h2 className="text-lg font-semibold leading-relaxed">
@@ -174,7 +174,7 @@ export default function TakeTestPage() {
         <div className="flex w-1/2 flex-col">
           <div className="rounded-2xl border bg-card p-6">
             <div className="mb-4 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Your Answer
+              {t("yourAnswer")}
             </div>
             {currentQuestion && (
               <QuestionRenderer
@@ -195,15 +195,15 @@ export default function TakeTestPage() {
           onClick={prevQuestion}
           disabled={isFirst}
         >
-          Previous
+          {t("previous")}
         </Button>
 
         <div className="flex gap-2">
           {!isLast ? (
-            <Button onClick={nextQuestion}>Next</Button>
+            <Button onClick={nextQuestion}>{t("next")}</Button>
           ) : (
             <Button onClick={handleSubmit} disabled={submitting}>
-              {submitting ? "Submitting..." : "Submit Test"}
+              {submitting ? t("submitting") : t("submitTest")}
             </Button>
           )}
         </div>

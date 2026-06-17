@@ -2,12 +2,14 @@
 
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export default function RoleSetupPage() {
+  const t = useTranslations("roleSetup");
   const { user, isLoaded } = useUser();
   const router = useRouter();
   const [saving, setSaving] = useState(false);
@@ -24,10 +26,10 @@ export default function RoleSetupPage() {
       if (!res.ok) {
         throw new Error("Failed to set role");
       }
-      toast.success(`Account set up as ${role}`);
+      toast.success(t("toastSetup", { role }));
       router.push(role === "teacher" ? "/teacher/dashboard" : "/student/join");
     } catch {
-      toast.error("Failed to set role. Please try again.");
+      toast.error(t("toastError"));
       setSaving(false);
     }
   }
@@ -35,7 +37,7 @@ export default function RoleSetupPage() {
   if (!isLoaded) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <p className="text-muted-foreground">Loading...</p>
+        <p className="text-muted-foreground">{t("loading")}</p>
       </div>
     );
   }
@@ -50,10 +52,10 @@ export default function RoleSetupPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-xl text-center">
-            Choose Your Role
+            {t("title")}
           </CardTitle>
           <p className="text-sm text-muted-foreground text-center mt-1">
-            Are you a teacher or a student?
+            {t("description")}
           </p>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
@@ -63,7 +65,7 @@ export default function RoleSetupPage() {
             disabled={saving}
             onClick={() => setRole("teacher")}
           >
-            {saving ? "Saving..." : "I'm a Teacher"}
+            {saving ? t("saving") : t("imATeacher")}
           </Button>
           <Button
             size="lg"
@@ -72,7 +74,7 @@ export default function RoleSetupPage() {
             disabled={saving}
             onClick={() => setRole("student")}
           >
-            {saving ? "Saving..." : "I'm a Student"}
+            {saving ? t("saving") : t("imAStudent")}
           </Button>
         </CardContent>
       </Card>

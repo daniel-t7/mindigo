@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import ThemeSwitch from "@/components/ui/theme-switch";
 import { useTheme } from "@/components/theme-provider";
 
 export function AppHeader() {
+  const t = useTranslations("appHeader");
   const { user } = useUser();
   const { resolvedTheme } = useTheme();
   const role = user?.publicMetadata?.role as string | undefined;
@@ -20,19 +22,22 @@ export function AppHeader() {
             href="/"
             className="text-lg font-bold tracking-tight"
           >
-            testche
+            {t("siteName")}
           </Link>
           <nav className="hidden items-center gap-4 sm:flex">
             <Button variant="link" asChild>
-              <Link href="/student/join">Join Test</Link>
+              <Link href="/student/join">{t("joinTest")}</Link>
             </Button>
             {role === "teacher" && (
               <>
                 <Button variant="link" asChild>
-                  <Link href="/teacher/dashboard">Dashboard</Link>
+                  <Link href="/teacher/dashboard">{t("dashboard")}</Link>
                 </Button>
                 <Button variant="link" asChild>
-                  <Link href="/teacher/create-test">Create Test</Link>
+                  <Link href="/teacher/create-test">{t("createTest")}</Link>
+                </Button>
+                <Button variant="link" asChild>
+                  <Link href="/settings">{t("settings")}</Link>
                 </Button>
               </>
             )}
@@ -43,10 +48,10 @@ export function AppHeader() {
           {!user && (
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" asChild>
-                <Link href="/sign-in">Sign In</Link>
+                <Link href="/sign-in">{t("signIn")}</Link>
               </Button>
               <Button size="sm" asChild>
-                <Link href="/sign-up">Sign Up</Link>
+                <Link href="/sign-up">{t("signUp")}</Link>
               </Button>
             </div>
           )}
