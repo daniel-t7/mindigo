@@ -7,6 +7,7 @@ export const tests = sqliteTable('tests', {
     timeLimitMinutes: integer('time_limit_minutes').notNull(),
     code: text('code').notNull().unique(),
     teacherId: text('teacher_id').notNull(),
+    scoringFormula: text('scoring_formula'),
     createdAt: text('created_at').$defaultFn(() => new Date().toISOString()),
 });
 
@@ -17,6 +18,9 @@ export const questions = sqliteTable('questions', {
     text: text('text').notNull(),
     options: text('options'),
     correctAnswer: text('correct_answer').notNull(),
+    imageUrl: text('image_url'),
+    codeBlock: text('code_block'),
+    points: integer('points').notNull().default(1),
     order: integer('order').notNull(),
 });
 

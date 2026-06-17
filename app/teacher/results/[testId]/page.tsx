@@ -6,6 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { CodeBlock } from "@/components/ui/code-block";
 import { Separator } from "@/components/ui/separator";
 
 interface AnswerDetail {
@@ -15,6 +16,29 @@ interface AnswerDetail {
   answer: string;
   correctAnswer: string;
   isCorrect: boolean;
+  imageUrl: string | null;
+  codeBlock: { language: string; code: string } | null;
+  points: number;
+}
+
+interface GradeThreshold {
+  minPoints: number;
+  label: string;
+}
+
+function computeGrade(earned: number, total: number, formulaJson: string | null): string | null {
+  if (!formulaJson) return null;
+  try {
+    const thresholds: GradeThreshold[] = JSON.parse(formulaJson);
+    if (!thresholds.length) return null;
+    let grade = thresholds[0].label;
+    for (const t of thresholds) {
+      if (earned >= t.minPoints) grade = t.label;
+    }
+    return grade;
+  } catch {
+    return null;
+  }
 }
 
 interface SubmissionSummary {
@@ -31,6 +55,7 @@ interface TestInfo {
   title: string;
   timeLimitMinutes: number;
   code: string;
+  scoringFormula: string | null;
 }
 
 export default function TestResultsPage() {
@@ -116,10 +141,18 @@ export default function TestResultsPage() {
               <CardTitle>{selectedSubmission.studentName}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-wrap">
                 <span className="text-2xl font-bold">
                   {selectedSubmission.score} / {selectedSubmission.totalQuestions}
                 </span>
+                {(() => {
+                  const grade = computeGrade(selectedSubmission.score, selectedSubmission.totalQuestions, test.scoringFormula);
+                  return grade ? (
+                    <Badge className="text-sm px-3 py-1">
+                      Grade: {grade}
+                    </Badge>
+                  ) : null;
+                })()}
                 <Badge
                   variant={
                     selectedSubmission.score === selectedSubmission.totalQuestions
@@ -147,31 +180,52 @@ export default function TestResultsPage() {
                       <span className="text-sm font-medium">
                         Q{idx + 1}: {answer.questionText}
                       </span>
+                      <span className="text-xs text-muted-foreground">
+                        {answer.points} pt{answer.points !== 1 ? "s" : ""}
+                      </span>
                       <Badge variant={answer.isCorrect ? "default" : "destructive"}>
                         {answer.isCorrect ? "Correct" : "Incorrect"}
                       </Badge>
                     </div>
-                    <div className="space-y-1 text-sm text-muted-foreground">
-                      <p>
-                        Student answer:{" "}
-                        <span
-                          className={
-                            answer.isCorrect
-                              ? "text-green-600 dark:text-green-400"
-                              : "text-destructive"
-                          }
-                        >
-                          {answer.answer || "(no answer)"}
-                        </span>
-                      </p>
-                      {!answer.isCorrect && (
+                    <div className="space-y-3 text-sm text-muted-foreground">
+                      {answer.imageUrl && (
+                        <div className="overflow-hidden rounded-lg border">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={answer.imageUrl}
+                            alt="Question illustration"
+                            className="max-h-40 w-full object-contain"
+                          />
+                        </div>
+                      )}
+                      {answer.codeBlock && (
+                        <CodeBlock
+                          language={answer.codeBlock.language}
+                          code={answer.codeBlock.code}
+                        />
+                      )}
+                      <div>
                         <p>
-                          Correct answer:{" "}
-                          <span className="text-green-600 dark:text-green-400">
-                            {answer.correctAnswer}
+                          Student answer:{" "}
+                          <span
+                            className={
+                              answer.isCorrect
+                                ? "text-green-600 dark:text-green-400"
+                                : "text-destructive"
+                            }
+                          >
+                            {answer.answer || "(no answer)"}
                           </span>
                         </p>
-                      )}
+                        {!answer.isCorrect && (
+                          <p>
+                            Correct answer:{" "}
+                            <span className="text-green-600 dark:text-green-400">
+                              {answer.correctAnswer}
+                            </span>
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -203,6 +257,14 @@ export default function TestResultsPage() {
                   <span className="text-lg font-bold">
                     {sub.score} / {sub.totalQuestions}
                   </span>
+                  {(() => {
+                    const grade = computeGrade(sub.score, sub.totalQuestions, test.scoringFormula);
+                    return grade ? (
+                      <Badge variant="outline" className="text-xs">
+                        {grade}
+                      </Badge>
+                    ) : null;
+                  })()}
                   <Badge
                     variant={
                       sub.score === sub.totalQuestions

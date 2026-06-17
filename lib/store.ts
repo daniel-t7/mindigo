@@ -3,12 +3,25 @@ import { persist } from "zustand/middleware";
 
 export type QuestionType = "multiple-choice" | "true-false" | "open";
 
+export interface CodeBlock {
+  language: string;
+  code: string;
+}
+
+export interface GradeThreshold {
+  minPoints: number;
+  label: string;
+}
+
 export interface Question {
   id: string;
   type: QuestionType;
   text: string;
   options: string[];
   correctAnswer: string;
+  imageUrl?: string;
+  codeBlock?: CodeBlock;
+  points: number;
 }
 
 export interface ActiveTestSession {

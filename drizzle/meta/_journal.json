@@ -15,6 +15,20 @@
       "when": 1781567382255,
       "tag": "0001_freezing_tag",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1781695958502,
+      "tag": "0002_amused_beyonder",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1781696290570,
+      "tag": "0003_public_mandarin",
+      "breakpoints": true
     }
   ]
 }

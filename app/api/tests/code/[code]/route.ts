@@ -18,6 +18,7 @@ export async function GET(
         title: true,
         timeLimitMinutes: true,
         code: true,
+        scoringFormula: true,
         createdAt: true,
       },
       with: {
@@ -27,6 +28,9 @@ export async function GET(
             type: true,
             text: true,
             options: true,
+            imageUrl: true,
+            codeBlock: true,
+            points: true,
             order: true,
           },
           orderBy: questions.order,
@@ -43,6 +47,7 @@ export async function GET(
       questions: test.questions.map((q) => ({
         ...q,
         options: q.options ? JSON.parse(q.options) : [],
+        codeBlock: q.codeBlock ? JSON.parse(q.codeBlock) : null,
       })),
     };
 

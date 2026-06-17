@@ -25,6 +25,9 @@ export async function POST(request: Request) {
         timeLimitMinutes: body.timeLimitMinutes ?? 30,
         code,
         teacherId,
+        scoringFormula: body.scoringFormula?.length
+          ? JSON.stringify(body.scoringFormula)
+          : null,
       });
 
       for (let i = 0; i < body.questions.length; i++) {
@@ -36,6 +39,9 @@ export async function POST(request: Request) {
           text: q.text,
           options: q.options?.length ? JSON.stringify(q.options) : null,
           correctAnswer: q.correctAnswer,
+          imageUrl: q.imageUrl || null,
+          codeBlock: q.codeBlock ? JSON.stringify(q.codeBlock) : null,
+          points: q.points ?? 1,
           order: i,
         });
       }

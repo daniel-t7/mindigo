@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { QuestionType } from "@/lib/store";
+import type { QuestionType, GradeThreshold } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,6 +24,10 @@ interface QuestionForm {
   text: string;
   options: string[];
   correctAnswer: string;
+  imageUrl: string;
+  codeLanguage: string;
+  codeCode: string;
+  points: number;
 }
 
 function freshQuestion(): QuestionForm {
@@ -33,15 +37,62 @@ function freshQuestion(): QuestionForm {
     text: "",
     options: ["", "", "", ""],
     correctAnswer: "",
+    imageUrl: "",
+    codeLanguage: "",
+    codeCode: "",
+    points: 1,
   };
 }
+
+const CODE_LANGUAGES = [
+  "C#",
+  "Java",
+  "JavaScript",
+  "Python",
+  "C++",
+  "TypeScript",
+  "Go",
+  "Rust",
+  "SQL",
+  "HTML",
+  "CSS",
+  "PHP",
+  "Ruby",
+  "Swift",
+  "Kotlin",
+  "Other",
+];
 
 export default function CreateTestPage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [timeLimitMinutes, setTimeLimitMinutes] = useState(30);
   const [questions, setQuestions] = useState<QuestionForm[]>([freshQuestion()]);
+  const [scoringFormula, setScoringFormula] = useState<GradeThreshold[]>([
+    { minPoints: 0, label: "F" },
+  ]);
   const [saving, setSaving] = useState(false);
+
+  function updateThreshold(index: number, field: keyof GradeThreshold, value: unknown) {
+    setScoringFormula((prev) =>
+      prev.map((t, i) => (i === index ? { ...t, [field]: value } : t)),
+    );
+  }
+
+  function addThreshold() {
+    const maxPoints = questions.reduce((sum, q) => sum + q.points, 0);
+    const nextMin = scoringFormula.length > 0
+      ? scoringFormula[scoringFormula.length - 1].minPoints + 1
+      : 0;
+    setScoringFormula((prev) => [
+      ...prev,
+      { minPoints: Math.min(nextMin, maxPoints), label: "" },
+    ]);
+  }
+
+  function removeThreshold(index: number) {
+    setScoringFormula((prev) => prev.filter((_, i) => i !== index));
+  }
 
   function addQuestion() {
     setQuestions((prev) => [...prev, freshQuestion()]);
@@ -113,6 +164,8 @@ export default function CreateTestPage() {
 
     setSaving(true);
 
+    const sortedFormula = [...scoringFormula].sort((a, b) => a.minPoints - b.minPoints);
+
     const mapped = questions.map((q) => ({
       id: q.id,
       type: q.type,
@@ -123,6 +176,11 @@ export default function CreateTestPage() {
           ? ["True", "False"]
           : [],
       correctAnswer: q.correctAnswer,
+      imageUrl: q.imageUrl || undefined,
+      codeBlock: q.codeLanguage && q.codeCode
+        ? { language: q.codeLanguage, code: q.codeCode }
+        : undefined,
+      points: q.points,
     }));
 
     try {
@@ -133,6 +191,7 @@ export default function CreateTestPage() {
           title: title.trim(),
           timeLimitMinutes,
           questions: mapped,
+          scoringFormula: sortedFormula,
         }),
       });
 
@@ -180,6 +239,58 @@ export default function CreateTestPage() {
                 onChange={(e) => setTimeLimitMinutes(Number(e.target.value))}
               />
             </div>
+
+            <Separator />
+
+            <div className="space-y-3">
+              <Label>Scoring Formula (optional)</Label>
+              <p className="text-xs text-muted-foreground">
+                Define grade thresholds based on total points earned.
+              </p>
+              <div className="space-y-2">
+                {scoringFormula.map((threshold, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <Input
+                      type="number"
+                      min={0}
+                      className="w-24"
+                      value={threshold.minPoints}
+                      onChange={(e) =>
+                        updateThreshold(idx, "minPoints", Number(e.target.value))
+                      }
+                      placeholder="Min"
+                    />
+                    <span className="text-xs text-muted-foreground">pts</span>
+                    <Input
+                      value={threshold.label}
+                      onChange={(e) =>
+                        updateThreshold(idx, "label", e.target.value)
+                      }
+                      placeholder="Grade label (e.g. A, B, C...)"
+                      className="flex-1"
+                    />
+                    {scoringFormula.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeThreshold(idx)}
+                      >
+                        &times;
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addThreshold}
+              >
+                Add Threshold
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
@@ -207,23 +318,36 @@ export default function CreateTestPage() {
                 )}
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Question Type</Label>
-                  <Select
-                    value={question.type}
-                    onValueChange={(v: QuestionType) =>
-                      updateQuestion(question.id, "type", v)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
-                      <SelectItem value="true-false">True / False</SelectItem>
-                      <SelectItem value="open">Open Answer</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="flex gap-4">
+                  <div className="flex-1 space-y-2">
+                    <Label>Question Type</Label>
+                    <Select
+                      value={question.type}
+                      onValueChange={(v: QuestionType) =>
+                        updateQuestion(question.id, "type", v)
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
+                        <SelectItem value="true-false">True / False</SelectItem>
+                        <SelectItem value="open">Open Answer</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="w-24 space-y-2">
+                    <Label>Points</Label>
+                    <Input
+                      type="number"
+                      min={1}
+                      value={question.points}
+                      onChange={(e) =>
+                        updateQuestion(question.id, "points", Math.max(1, Number(e.target.value)))
+                      }
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -235,6 +359,76 @@ export default function CreateTestPage() {
                     }
                     placeholder="Enter the question..."
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Image URL (optional)</Label>
+                  <Input
+                    value={question.imageUrl}
+                    onChange={(e) =>
+                      updateQuestion(question.id, "imageUrl", e.target.value)
+                    }
+                    placeholder="https://example.com/image.png"
+                  />
+                  {question.imageUrl && (
+                    <div className="relative mt-2 overflow-hidden rounded-lg border">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={question.imageUrl}
+                        alt="Preview"
+                        className="max-h-48 w-full object-contain"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = "none";
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Code Block (optional)</Label>
+                  <div className="flex gap-2">
+                    <Select
+                      value={question.codeLanguage}
+                      onValueChange={(v) =>
+                        updateQuestion(question.id, "codeLanguage", v)
+                      }
+                    >
+                      <SelectTrigger className="w-40">
+                        <SelectValue placeholder="Language" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CODE_LANGUAGES.map((lang) => (
+                          <SelectItem key={lang} value={lang}>
+                            {lang}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {question.codeLanguage && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          updateQuestion(question.id, "codeLanguage", "");
+                          updateQuestion(question.id, "codeCode", "");
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                  {question.codeLanguage && (
+                    <Textarea
+                      value={question.codeCode}
+                      onChange={(e) =>
+                        updateQuestion(question.id, "codeCode", e.target.value)
+                      }
+                      placeholder={`Paste your ${question.codeLanguage} code here...`}
+                      className="min-h-[100px] font-mono text-sm"
+                    />
+                  )}
                 </div>
 
                 {(question.type === "multiple-choice") && (

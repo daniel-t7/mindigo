@@ -50,6 +50,7 @@ export async function GET(request: Request) {
       score: submission.score,
       totalQuestions: submission.totalQuestions,
       submittedAt: submission.submittedAt,
+      scoringFormula: test.scoringFormula ?? null,
       answers: submissionAnswers.map((a) => {
         const q = testQuestions.find((tq) => tq.id === a.questionId);
         return {
@@ -59,6 +60,9 @@ export async function GET(request: Request) {
           answer: a.answer,
           correctAnswer: q?.correctAnswer ?? "",
           isCorrect: a.answer === q?.correctAnswer,
+          imageUrl: q?.imageUrl ?? null,
+          codeBlock: q?.codeBlock ? JSON.parse(q.codeBlock) : null,
+          points: q?.points ?? 1,
         };
       }),
     });

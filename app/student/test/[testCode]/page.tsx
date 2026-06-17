@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useActiveTestStore } from "@/lib/store";
 import { ProgressBar } from "@/components/progress-bar";
 import { QuestionRenderer } from "@/components/question-renderer";
+import { CodeBlock } from "@/components/ui/code-block";
 import { TestTimer } from "@/components/test-timer";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -137,13 +138,36 @@ export default function TakeTestPage() {
 
       <div className="flex flex-1 gap-8">
         <div className="w-1/2">
-          <div className="sticky top-20 rounded-2xl border bg-card p-6">
-            <div className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Question {currentIndex + 1} of {total}
+          <div className="sticky top-20 space-y-4">
+            <div className="rounded-2xl border bg-card p-6">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Question {currentIndex + 1} of {total}
+                </span>
+                <span className="text-xs font-medium text-muted-foreground">
+                  {currentQuestion?.points ?? 1} pt{currentQuestion?.points !== 1 ? "s" : ""}
+                </span>
+              </div>
+              <h2 className="text-lg font-semibold leading-relaxed">
+                {currentQuestion?.text}
+              </h2>
             </div>
-            <h2 className="text-lg font-semibold leading-relaxed">
-              {currentQuestion?.text}
-            </h2>
+            {currentQuestion?.imageUrl && (
+              <div className="overflow-hidden rounded-2xl border bg-card">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={currentQuestion.imageUrl}
+                  alt="Question illustration"
+                  className="w-full object-contain"
+                />
+              </div>
+            )}
+            {currentQuestion?.codeBlock && (
+              <CodeBlock
+                language={currentQuestion.codeBlock.language}
+                code={currentQuestion.codeBlock.code}
+              />
+            )}
           </div>
         </div>
 

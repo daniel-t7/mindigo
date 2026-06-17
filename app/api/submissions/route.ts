@@ -32,16 +32,19 @@ export async function POST(request: Request) {
       return apiError(404, "Test not found");
     }
 
-    let score = 0;
+    let totalPoints = 0;
+    let earnedPoints = 0;
     const answerRows: { id: string; submissionId: string; questionId: string; answer: string }[] = [];
 
     for (const q of test.questions) {
+      const qPoints = q.points ?? 1;
+      totalPoints += qPoints;
       const studentAnswer = body.answers.find(
         (a: { questionId: string }) => a.questionId === q.id,
       );
       const answerValue = studentAnswer?.answer ?? "";
       const isCorrect = answerValue === q.correctAnswer;
-      if (isCorrect) score++;
+      if (isCorrect) earnedPoints += qPoints;
 
       answerRows.push({
         id: crypto.randomUUID(),
@@ -58,8 +61,8 @@ export async function POST(request: Request) {
         id: submissionId,
         testId: test.id,
         studentName: body.studentName.trim(),
-        score,
-        totalQuestions: test.questions.length,
+        score: earnedPoints,
+        totalQuestions: totalPoints,
         teacherId: test.teacherId,
       });
 
@@ -74,8 +77,8 @@ export async function POST(request: Request) {
       testId: test.id,
       testTitle: test.title,
       studentName: body.studentName.trim(),
-      score,
-      totalQuestions: test.questions.length,
+      score: earnedPoints,
+      totalQuestions: totalPoints,
     });
   } catch (error) {
     if (error instanceof ApiError) {
@@ -133,6 +136,9 @@ export async function GET(request: Request) {
             answer: a.answer,
             correctAnswer: q?.correctAnswer ?? "",
             isCorrect: a.answer === q?.correctAnswer,
+            imageUrl: q?.imageUrl ?? null,
+            codeBlock: q?.codeBlock ? JSON.parse(q.codeBlock) : null,
+            points: q?.points ?? 1,
           };
         }),
       })),

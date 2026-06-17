@@ -6,6 +6,7 @@ import { useActiveTestStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { CodeBlock } from "@/components/ui/code-block";
 
 interface AnswerDetail {
   questionId: string;
@@ -14,6 +15,14 @@ interface AnswerDetail {
   answer: string;
   correctAnswer: string;
   isCorrect: boolean;
+  imageUrl: string | null;
+  codeBlock: { language: string; code: string } | null;
+  points: number;
+}
+
+interface GradeThreshold {
+  minPoints: number;
+  label: string;
 }
 
 interface ResultData {
@@ -22,6 +31,22 @@ interface ResultData {
   totalQuestions: number;
   submittedAt: string;
   answers: AnswerDetail[];
+  scoringFormula: string | null;
+}
+
+function computeGrade(earned: number, total: number, formulaJson: string | null): string | null {
+  if (!formulaJson) return null;
+  try {
+    const thresholds: GradeThreshold[] = JSON.parse(formulaJson);
+    if (!thresholds.length) return null;
+    let grade = thresholds[0].label;
+    for (const t of thresholds) {
+      if (earned >= t.minPoints) grade = t.label;
+    }
+    return grade;
+  } catch {
+    return null;
+  }
 }
 
 export default function StudentResultsPage() {
@@ -43,6 +68,7 @@ export default function StudentResultsPage() {
         totalQuestions: data.totalQuestions,
         submittedAt: data.submittedAt,
         answers: data.answers,
+        scoringFormula: data.scoringFormula,
       }))
       .catch(() => setResult(null));
   }, [session]);
@@ -76,9 +102,10 @@ export default function StudentResultsPage() {
     );
   }
 
-  const percentage = Math.round(
-    (result.score / result.totalQuestions) * 100,
-  );
+  const grade = computeGrade(result.score, result.totalQuestions, result.scoringFormula);
+  const percentage = result.totalQuestions > 0
+    ? Math.round((result.score / result.totalQuestions) * 100)
+    : 0;
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
@@ -98,8 +125,13 @@ export default function StudentResultsPage() {
         <CardContent className="flex flex-col items-center py-10">
           <div className="text-5xl font-bold">{percentage}%</div>
           <div className="mt-2 text-lg text-muted-foreground">
-            {result.score} / {result.totalQuestions} correct
+            {result.score} / {result.totalQuestions} points
           </div>
+          {grade && (
+            <Badge className="mt-3 text-lg px-4 py-1">
+              Grade: {grade}
+            </Badge>
+          )}
           <Badge
             variant={
               percentage === 100
@@ -130,12 +162,33 @@ export default function StudentResultsPage() {
                 <CardTitle className="text-base">
                   Q{idx + 1}: {answer.questionText}
                 </CardTitle>
-                <Badge variant={answer.isCorrect ? "default" : "destructive"}>
-                  {answer.isCorrect ? "Correct" : "Incorrect"}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">
+                    {answer.points} pt{answer.points !== 1 ? "s" : ""}
+                  </span>
+                  <Badge variant={answer.isCorrect ? "default" : "destructive"}>
+                    {answer.isCorrect ? "Correct" : "Incorrect"}
+                  </Badge>
+                </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-1 text-sm">
+            <CardContent className="space-y-3 text-sm">
+              {answer.imageUrl && (
+                <div className="overflow-hidden rounded-lg border">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={answer.imageUrl}
+                    alt="Question illustration"
+                    className="max-h-40 w-full object-contain"
+                  />
+                </div>
+              )}
+              {answer.codeBlock && (
+                <CodeBlock
+                  language={answer.codeBlock.language}
+                  code={answer.codeBlock.code}
+                />
+              )}
               <p>
                 Your answer:{" "}
                 <span

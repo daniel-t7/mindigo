@@ -52,13 +52,18 @@ export async function PUT(
     }
 
     await db.transaction(async (tx) => {
-      if (body.title !== undefined || body.timeLimitMinutes !== undefined) {
+      if (body.title !== undefined || body.timeLimitMinutes !== undefined || body.scoringFormula !== undefined) {
         await tx
           .update(tests)
           .set({
             ...(body.title !== undefined && { title: body.title.trim() }),
             ...(body.timeLimitMinutes !== undefined && {
               timeLimitMinutes: body.timeLimitMinutes,
+            }),
+            ...(body.scoringFormula !== undefined && {
+              scoringFormula: body.scoringFormula?.length
+                ? JSON.stringify(body.scoringFormula)
+                : null,
             }),
           })
           .where(eq(tests.id, testId));
@@ -80,6 +85,9 @@ export async function PUT(
             text: q.text,
             options: q.options?.length ? JSON.stringify(q.options) : null,
             correctAnswer: q.correctAnswer,
+            imageUrl: q.imageUrl || null,
+            codeBlock: q.codeBlock ? JSON.stringify(q.codeBlock) : null,
+            points: q.points ?? 1,
             order: i,
           };
 
