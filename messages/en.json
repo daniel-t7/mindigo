@@ -24,14 +24,9 @@
     "clients": {
       "heading": "Trusted by educators at",
       "schools": [
-        "Springfield High",
-        "Riverside Academy",
-        "Tech Valley College",
-        "Brighton Institute",
-        "Summit University",
-        "Oakwood Prep",
-        "Metro State",
-        "Crestwood School"
+        "Romain Rolland Foreign Language High School",
+        "Romain Rolland Foreign Language High School",
+        "Romain Rolland Foreign Language High School"
       ]
     },
     "testsSearch": {
@@ -45,51 +40,114 @@
     },
     "testimonials": {
       "heading": "Loved by educators",
-      "subtitle": "Hear from teachers who use testche every day.",
+      "subtitle": "Hear what teachers using Testche every day have to say.",
       "items": [
         {
-          "name": "Dr. Sarah Chen",
-          "role": "Computer Science Professor",
-          "text": "The code block feature is a game-changer. My students can now see properly formatted C# and Python examples right in the test interface."
+          "name": "Dr. Ivan Petrov",
+          "role": "Computer Science Teacher",
+          "text": "The code block feature is revolutionary. My students can now see properly formatted C# and Python examples directly inside the test interface."
         },
         {
-          "name": "James Walker",
-          "role": "High School CS Teacher",
-          "text": "I love the point-based grading. Being able to assign different weights to questions and set custom grade thresholds gives me full control."
+          "name": "Maria Georgieva",
+          "role": "Information Technology Teacher",
+          "text": "I love the point-based grading system. Being able to assign different weights to questions and set custom grade thresholds gives me full control."
         },
         {
-          "name": "Priya Patel",
+          "name": "Nikolay Dimitrov",
           "role": "Programming Instructor",
-          "text": "Setting up a test takes minutes. The image support lets me include diagrams for algorithm questions — exactly what I needed."
+          "text": "Creating a test takes only minutes. Image support allows me to include diagrams for algorithm questions — exactly what I needed."
         },
         {
-          "name": "Mark Thompson",
+          "name": "Georgi Stoyanov",
           "role": "IT Department Head",
-          "text": "Students don't need accounts to take tests. They just enter a code and their name. Zero friction, and the results are available instantly."
+          "text": "Students don’t need accounts to take tests. They just enter a code and name. No barriers, and results are available instantly."
         },
         {
-          "name": "Elena Rodriguez",
+          "name": "Elena Nikolova",
           "role": "Online Course Creator",
-          "text": "The dark theme sync with Clerk authentication makes the whole experience feel premium. My students actually enjoy taking tests here."
+          "text": "The dark theme combined with Clerk authentication makes the whole experience feel premium. My students really enjoy taking quizzes here."
         }
       ]
     },
     "footer": {
-      "about": "About",
-      "aboutItems": ["About", "Works", "Pricing"],
-      "features": "Features",
-      "featuresItems": ["Products", "Agency", "Dashboard"],
-      "products": "Products",
-      "productsItems": ["DIcons", "DShapes", "Graaadients"],
-      "designs": "Designs",
-      "designsItems": ["Design", "Components", "Blogs"],
-      "others": "Others",
-      "othersItems": ["Graphic", "3D Icons", "Colors"],
+      "product": "Product",
+      "productItems": ["How it Works", "Pricing", "About"],
       "company": "Company",
       "companyItems": ["Contact", "Terms", "Privacy"],
       "made": "Made",
       "by": "by",
       "author": "Daniel Todorov"
+    },
+    "pages": {
+      "howItWorks": {
+        "metaTitle": "How it Works — testche",
+        "metaDescription": "Learn how testche works. Create, share, and grade online tests in minutes.",
+        "step1Title": "1. Create a Test",
+        "step1Desc": "Teachers build custom tests with code blocks, images, multiple choice, true/false, and open-answer questions. Set time limits, point values, and grade thresholds.",
+        "step2Title": "2. Share the Code",
+        "step2Desc": "Each test gets a unique code. Share it with your students — no account or sign-up required on their end. They just enter the code and their name.",
+        "step3Title": "3. Students Take the Test",
+        "step3Desc": "Students answer at their own pace within the time limit. The interface is clean, distraction-free, and works on any device.",
+        "step4Title": "4. Review Results",
+        "step4Desc": "Teachers get instant access to results, answer breakdowns, and auto-calculated grades. Review individual submissions or view the full class summary."
+      },
+      "about": {
+        "metaTitle": "About — testche",
+        "metaDescription": "testche is an online testing platform built for computer science educators and their students.",
+        "p1": "testche is an online testing platform built for computer science educators and their students. Create custom tests with code blocks, images, and point-based grading in minutes.",
+        "p2": "Students join with a simple code — no account or sign-up required. The focus is on removing friction so teachers can assess understanding and students can focus on answering.",
+        "p3": "Built by Daniel Todorov, testche started as a tool to solve a real problem: making programming assessments easier to create, distribute, and grade."
+      },
+      "pricing": {
+        "metaTitle": "Pricing — testche",
+        "metaDescription": "testche is free for teachers. Create unlimited tests with code blocks, images, and point-based grading.",
+        "freeTitle": "Free",
+        "freePrice": "$0",
+        "free1": "Create unlimited tests",
+        "free2": "Up to 30 students per test",
+        "free3": "Code blocks & image support",
+        "free4": "Basic grading",
+        "proTitle": "Pro",
+        "proPrice": "Coming soon",
+        "pro1": "Unlimited students",
+        "pro2": "Advanced analytics",
+        "pro3": "Custom branding",
+        "pro4": "Priority support"
+      },
+      "contact": {
+        "metaTitle": "Contact — testche",
+        "metaDescription": "Get in touch with the testche team.",
+        "description": "Have a question, feedback, or want to report an issue? Reach out via email.",
+        "email": "hello@testche.app"
+      },
+      "terms": {
+        "metaTitle": "Terms of Service — testche",
+        "metaDescription": "Terms of service for using testche.",
+        "s1Title": "1. Acceptance of Terms",
+        "s1Desc": "By using testche, you agree to these terms. If you do not agree, do not use the service.",
+        "s2Title": "2. Use of Service",
+        "s2Desc": "testche provides an online platform for creating and taking tests. You may not use the service for any unlawful purpose or in violation of any applicable laws.",
+        "s3Title": "3. Account Responsibility",
+        "s3Desc": "Teachers are responsible for maintaining the confidentiality of their account and for all activities that occur under their account.",
+        "s4Title": "4. Limitation of Liability",
+        "s4Desc": "testche is provided \"as is\" without warranty of any kind. The creators shall not be liable for any damages arising from the use of the service.",
+        "s5Title": "5. Changes",
+        "s5Desc": "We reserve the right to modify these terms at any time. Users will be notified of material changes."
+      },
+      "privacy": {
+        "metaTitle": "Privacy Policy — testche",
+        "metaDescription": "Privacy policy for testche.",
+        "s1Title": "1. Information We Collect",
+        "s1Desc": "We collect only the information necessary to provide the service: teacher account details (name, email) and student names for test submissions.",
+        "s2Title": "2. How We Use Information",
+        "s2Desc": "Information is used solely for test creation, grading, and result display. We do not sell or share personal data with third parties.",
+        "s3Title": "3. Data Storage",
+        "s3Desc": "Test data and submissions are stored securely. Teachers can delete their tests and associated data at any time.",
+        "s4Title": "4. Cookies",
+        "s4Desc": "We use essential cookies for authentication and theme preferences. No tracking or advertising cookies are used.",
+        "s5Title": "5. Contact",
+        "s5Desc": "For privacy-related inquiries, contact us at hello@testche.app."
+      }
     }
   },
   "appHeader": {

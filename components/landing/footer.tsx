@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useTranslations } from "next-intl"
-import { Heart, Mail } from "lucide-react"
+import { Mail } from "lucide-react"
 import { FiInstagram, FiFacebook, FiLinkedin } from "react-icons/fi"
 import { FaBehance } from "react-icons/fa"
 import { RiTwitterXFill } from "react-icons/ri";
@@ -12,48 +12,12 @@ function getFooterNav(t: ReturnType<typeof useTranslations>) {
   return {
     categories: [
       {
-        id: "about",
-        name: t("about"),
+        id: "product",
+        name: t("product"),
         items: [
-          { name: t("aboutItems.0"), href: "/about" },
-          { name: t("aboutItems.1"), href: "/agency/works" },
-          { name: t("aboutItems.2"), href: "/pricing" },
-        ],
-      },
-      {
-        id: "features",
-        name: t("features"),
-        items: [
-          { name: t("featuresItems.0"), href: "/products" },
-          { name: t("featuresItems.1"), href: "/agency" },
-          { name: t("featuresItems.2"), href: "/dashboard" },
-        ],
-      },
-      {
-        id: "products",
-        name: t("products"),
-        items: [
-          { name: t("productsItems.0"), href: "/products/dicons" },
-          { name: t("productsItems.1"), href: "/products/dshapes" },
-          { name: t("productsItems.2"), href: "/products/graaadients" },
-        ],
-      },
-      {
-        id: "designs",
-        name: t("designs"),
-        items: [
-          { name: t("designsItems.0"), href: "/designs" },
-          { name: t("designsItems.1"), href: "/components" },
-          { name: t("designsItems.2"), href: "/blogs" },
-        ],
-      },
-      {
-        id: "other",
-        name: t("others"),
-        items: [
-          { name: t("othersItems.0"), href: "/graphic" },
-          { name: t("othersItems.1"), href: "/products/3dicons" },
-          { name: t("othersItems.2"), href: "/products/colors/generate" },
+          { name: t("productItems.0"), href: "/how-it-works" },
+          { name: t("productItems.1"), href: "/pricing" },
+          { name: t("productItems.2"), href: "/about" },
         ],
       },
       {
@@ -102,7 +66,7 @@ export function Footer() {
         <div className="mx-auto w-full max-w-7xl px-6 py-10">
           <div className="border-b border-dotted"> </div>
           <div className="py-10">
-            <div className="grid grid-cols-3 flex-row justify-between gap-6 leading-6 md:flex">
+            <div className="grid grid-cols-1 gap-18 leading-6 sm:grid-cols-2 md:flex">
               {navigation.categories.map((section) => (
                       <div key={section.name}>
                         <p className="mb-2 text-sm font-semibold text-foreground">{section.name}</p>
