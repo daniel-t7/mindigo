@@ -8,6 +8,7 @@ export const tests = sqliteTable('tests', {
     code: text('code').notNull().unique(),
     teacherId: text('teacher_id').notNull(),
     scoringFormula: text('scoring_formula'),
+    isPublic: integer('is_public').notNull().default(0),
     createdAt: text('created_at').$defaultFn(() => new Date().toISOString()),
 });
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { QuestionType, GradeThreshold } from "@/lib/store";
+import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -71,6 +72,7 @@ export default function CreateTestPage() {
   const [scoringFormula, setScoringFormula] = useState<GradeThreshold[]>([
     { minPoints: 0, label: "F" },
   ]);
+  const [isPublic, setIsPublic] = useState(false);
   const [saving, setSaving] = useState(false);
 
   function updateThreshold(index: number, field: keyof GradeThreshold, value: unknown) {
@@ -192,6 +194,7 @@ export default function CreateTestPage() {
           timeLimitMinutes,
           questions: mapped,
           scoringFormula: sortedFormula,
+          isPublic,
         }),
       });
 
@@ -238,6 +241,13 @@ export default function CreateTestPage() {
                 value={timeLimitMinutes}
                 onChange={(e) => setTimeLimitMinutes(Number(e.target.value))}
               />
+            </div>
+
+            <div className="flex items-center gap-3 rounded-lg border p-3">
+              <Switch id="is-public" checked={isPublic} onCheckedChange={setIsPublic} />
+              <Label htmlFor="is-public" className="cursor-pointer">
+                Make this test publicly searchable
+              </Label>
             </div>
 
             <Separator />

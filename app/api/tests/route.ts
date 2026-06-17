@@ -28,6 +28,7 @@ export async function POST(request: Request) {
         scoringFormula: body.scoringFormula?.length
           ? JSON.stringify(body.scoringFormula)
           : null,
+        isPublic: body.isPublic ? 1 : 0,
       });
 
       for (let i = 0; i < body.questions.length; i++) {

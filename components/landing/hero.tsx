@@ -1,0 +1,37 @@
+"use client";
+
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
+export function Hero() {
+  return (
+    <section className="relative overflow-hidden border-b">
+      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="mb-6 inline-flex items-center rounded-full border bg-muted/50 px-4 py-1.5 text-xs font-medium text-muted-foreground">
+            Built for computer science educators
+          </div>
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+            Create, share, and grade
+            <span className="block text-scooter-500 dark:text-scooter-400">
+              online tests effortlessly
+            </span>
+          </h1>
+          <p className="mt-6 text-lg leading-relaxed text-muted-foreground sm:text-xl">
+            testche lets teachers build custom tests with code blocks, images, and
+            point-based grading. Students join with a code — no account needed.
+          </p>
+          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <Button size="lg" className="w-full sm:w-auto" asChild>
+              <Link href="/sign-up">Start Teaching</Link>
+            </Button>
+            <Button size="lg" variant="outline" className="w-full sm:w-auto" asChild>
+              <Link href="/student/join">Join as Student</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,var(--color-scooter-200),transparent_60%)] dark:bg-[radial-gradient(ellipse_at_top_right,var(--color-scooter-950),transparent_60%)]" />
+    </section>
+  );
+}

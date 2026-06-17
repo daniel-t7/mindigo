@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import type { QuestionType, GradeThreshold } from "@/lib/store";
+import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -72,6 +73,7 @@ export default function EditTestPage() {
   const [scoringFormula, setScoringFormula] = useState<GradeThreshold[]>([
     { minPoints: 0, label: "F" },
   ]);
+  const [isPublic, setIsPublic] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -106,6 +108,7 @@ export default function EditTestPage() {
         setTitle(data.title);
         setTimeLimitMinutes(data.timeLimitMinutes);
         setScoringFormula(data.scoringFormula ? JSON.parse(data.scoringFormula) : [{ minPoints: 0, label: "F" }]);
+        setIsPublic(data.isPublic ?? false);
         setQuestions(
           data.questions.map((q: {
             id: string;
@@ -237,6 +240,7 @@ export default function EditTestPage() {
           timeLimitMinutes,
           questions: mapped,
           scoringFormula: sortedFormula,
+          isPublic,
         }),
       });
 
@@ -290,6 +294,13 @@ export default function EditTestPage() {
                 value={timeLimitMinutes}
                 onChange={(e) => setTimeLimitMinutes(Number(e.target.value))}
               />
+            </div>
+
+            <div className="flex items-center gap-3 rounded-lg border p-3">
+              <Switch id="is-public" checked={isPublic} onCheckedChange={setIsPublic} />
+              <Label htmlFor="is-public" className="cursor-pointer">
+                Make this test publicly searchable
+              </Label>
             </div>
 
             <Separator />

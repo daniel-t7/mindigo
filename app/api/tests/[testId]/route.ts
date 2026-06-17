@@ -52,7 +52,7 @@ export async function PUT(
     }
 
     await db.transaction(async (tx) => {
-      if (body.title !== undefined || body.timeLimitMinutes !== undefined || body.scoringFormula !== undefined) {
+      if (body.title !== undefined || body.timeLimitMinutes !== undefined || body.scoringFormula !== undefined || body.isPublic !== undefined) {
         await tx
           .update(tests)
           .set({
@@ -65,6 +65,7 @@ export async function PUT(
                 ? JSON.stringify(body.scoringFormula)
                 : null,
             }),
+            ...(body.isPublic !== undefined && { isPublic: body.isPublic ? 1 : 0 }),
           })
           .where(eq(tests.id, testId));
       }

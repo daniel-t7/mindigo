@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useActiveTestStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,10 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 
-export default function JoinTestPage() {
+function JoinForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const startSession = useActiveTestStore((s) => s.startSession);
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState(() => searchParams.get("code")?.toUpperCase() ?? "");
   const [studentName, setStudentName] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -85,5 +86,13 @@ export default function JoinTestPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function JoinTestPage() {
+  return (
+    <Suspense fallback={<div className="flex flex-1 items-center justify-center p-4"><p className="text-muted-foreground">Loading...</p></div>}>
+      <JoinForm />
+    </Suspense>
   );
 }
