@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 
 export function Hero() {
+  const { isSignedIn, isLoaded } = useUser();
+
   return (
     <section className="relative overflow-hidden border-b px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
       <div className="mx-auto max-w-3xl text-center">
@@ -25,7 +28,9 @@ export function Hero() {
 
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <Button size="lg" className="w-full sm:w-auto" asChild>
-            <Link href="/sign-up">Create a Test</Link>
+            <Link href={isLoaded && isSignedIn ? "/teacher/create-test" : "/sign-up"}>
+              Create a Test
+            </Link>
           </Button>
           <Button size="lg" variant="outline" className="w-full sm:w-auto" asChild>
             <Link href="/student/join">Take a Test</Link>
