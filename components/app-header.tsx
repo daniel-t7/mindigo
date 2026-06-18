@@ -12,7 +12,6 @@ export function AppHeader() {
   const t = useTranslations("appHeader");
   const { user } = useUser();
   const { resolvedTheme } = useTheme();
-  const role = user?.publicMetadata?.role as string | undefined;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
@@ -28,7 +27,7 @@ export function AppHeader() {
             <Button variant="link" asChild>
               <Link href="/student/join">{t("joinTest")}</Link>
             </Button>
-            {role === "teacher" && (
+            {user && (
               <>
                 <Button variant="link" asChild>
                   <Link href="/teacher/dashboard">{t("dashboard")}</Link>

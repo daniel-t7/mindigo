@@ -172,16 +172,6 @@
     "imATeacher": "I'm a Teacher",
     "imAStudent": "I'm a Student"
   },
-  "roleSetup": {
-    "loading": "Loading...",
-    "title": "Choose Your Role",
-    "description": "Are you a teacher or a student?",
-    "saving": "Saving...",
-    "imATeacher": "I'm a Teacher",
-    "imAStudent": "I'm a Student",
-    "toastSetup": "Account set up as {role}",
-    "toastError": "Failed to set role. Please try again."
-  },
   "student": {
     "join": {
       "title": "Join a Test",
