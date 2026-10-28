@@ -2,7 +2,7 @@
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
-import { ThemeProvider, useTheme } from "@/components/theme-provider";
+import { ThemeProvider, useTheme } from "@/_components/theme-provider";
 import { type ReactNode } from "react";
 
 function ClerkThemed({ children }: { children: ReactNode }) {

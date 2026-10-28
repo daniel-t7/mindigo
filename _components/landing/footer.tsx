@@ -6,7 +6,7 @@ import { Mail } from "lucide-react"
 import { FiInstagram, FiFacebook, FiLinkedin } from "react-icons/fi"
 import { FaBehance } from "react-icons/fa"
 import { RiTwitterXFill } from "react-icons/ri";
-import ThemeSwitch from "@/components/ui/theme-switch"
+import ThemeSwitch from "@/_components/ui/theme-switch"
 
 function getFooterNav(t: ReturnType<typeof useTranslations>) {
   return {

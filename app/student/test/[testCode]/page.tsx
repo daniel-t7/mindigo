@@ -4,12 +4,12 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useActiveTestStore } from "@/lib/store";
-import { ProgressBar } from "@/components/progress-bar";
-import { QuestionRenderer } from "@/components/question-renderer";
-import { CodeBlock } from "@/components/ui/code-block";
-import { TestTimer } from "@/components/test-timer";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { ProgressBar } from "@/_components/progress-bar";
+import { QuestionRenderer } from "@/_components/question-renderer";
+import { CodeBlock } from "@/_components/ui/code-block";
+import { TestTimer } from "@/_components/test-timer";
+import { Button } from "@/_components/ui/button";
+import { Separator } from "@/_components/ui/separator";
 import { toast } from "sonner";
 
 export default function TakeTestPage() {

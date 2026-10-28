@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/_components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/_components/ui/card";
+import { Badge } from "@/_components/ui/badge";
 import { toast } from "sonner";
 
 interface TestSummary {

@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { CodeBlock } from "@/components/ui/code-block";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@/_components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/_components/ui/card";
+import { Badge } from "@/_components/ui/badge";
+import { CodeBlock } from "@/_components/ui/code-block";
+import { Separator } from "@/_components/ui/separator";
 
 interface AnswerDetail {
   questionId: string;

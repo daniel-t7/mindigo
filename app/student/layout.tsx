@@ -1,4 +1,4 @@
-import { AppHeader } from "@/components/app-header";
+import { AppHeader } from "@/_components/app-header";
 
 export default function StudentLayout({ children }: { children: React.ReactNode }) {
   return (

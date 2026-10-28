@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useActiveTestStore } from "@/lib/store";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { CodeBlock } from "@/components/ui/code-block";
+import { Button } from "@/_components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/_components/ui/card";
+import { Badge } from "@/_components/ui/badge";
+import { CodeBlock } from "@/_components/ui/code-block";
 
 interface AnswerDetail {
   questionId: string;

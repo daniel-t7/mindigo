@@ -4,9 +4,9 @@ import Link from "next/link";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
-import ThemeSwitch from "@/components/ui/theme-switch";
-import { useTheme } from "@/components/theme-provider";
+import { Button } from "@/_components/ui/button";
+import ThemeSwitch from "@/_components/ui/theme-switch";
+import { useTheme } from "@/_components/theme-provider";
 
 export function AppHeader() {
   const t = useTranslations("appHeader");

@@ -4,17 +4,17 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useUser } from "@clerk/nextjs";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/_components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+} from "@/_components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/_components/ui/card";
+import { Label } from "@/_components/ui/label";
+import { Separator } from "@/_components/ui/separator";
 
 function getLocaleFromCookie(): string {
   const match = document.cookie.match(/(?:^|;\s*)NEXT_LOCALE=([^;]*)/);

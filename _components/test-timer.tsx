@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface TestTimerProps {
@@ -10,6 +10,9 @@ interface TestTimerProps {
 }
 
 export function TestTimer({ startedAt, timeLimitMinutes, onExpire }: TestTimerProps) {
+  const onExpireRef = useRef(onExpire);
+  onExpireRef.current = onExpire;
+
   const calcRemaining = useCallback(() => {
     const start = new Date(startedAt).getTime();
     const end = start + timeLimitMinutes * 60 * 1000;
@@ -25,11 +28,11 @@ export function TestTimer({ startedAt, timeLimitMinutes, onExpire }: TestTimerPr
       setRemaining(r);
       if (r <= 0) {
         clearInterval(interval);
-        onExpire();
+        onExpireRef.current();
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [calcRemaining, onExpire]);
+  }, [calcRemaining]);
 
   const minutes = Math.floor(remaining / 60);
   const seconds = remaining % 60;

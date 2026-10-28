@@ -1,8 +1,8 @@
 "use client"
 
-import { LandingLayout } from "@/components/landing/landing-layout";
-import { LandingHeader } from "@/components/landing/header";
-import { Footer } from "@/components/landing/footer";
+import { LandingLayout } from "@/_components/landing/landing-layout";
+import { LandingHeader } from "@/_components/landing/header";
+import { Footer } from "@/_components/landing/footer";
 import { useTranslations } from "next-intl";
 
 export default function HowItWorksPage() {

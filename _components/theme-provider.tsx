@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, useMemo, type ReactNode } from "react";
 
 type Theme = "light" | "dark" | "system";
 
@@ -21,6 +21,7 @@ export function useTheme() {
 }
 
 function getSystemTheme(): "light" | "dark" {
+  if (typeof window === "undefined") return "light";
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
@@ -40,16 +41,22 @@ export function ThemeProvider({
   const [theme, setThemeState] = useState<Theme>(() => {
     if (typeof window === "undefined") return defaultTheme;
     try {
-      return (localStorage.getItem("theme") as Theme) || defaultTheme;
+      const stored = localStorage.getItem("theme") as Theme | null;
+      if (stored === "light" || stored === "dark" || stored === "system") {
+        return stored;
+      }
+      return defaultTheme;
     } catch {
       return defaultTheme;
     }
   });
 
+  const [systemTheme, setSystemTheme] = useState<"light" | "dark">(() => getSystemTheme());
+
   const resolvedTheme = typeof window === "undefined"
     ? undefined
     : theme === "system"
-      ? getSystemTheme()
+      ? systemTheme
       : theme;
 
   const setTheme = useCallback((newTheme: Theme) => {
@@ -65,20 +72,26 @@ export function ThemeProvider({
     }
     applyThemeClass(resolvedTheme);
     if (disableTransitionOnChange) {
-      requestAnimationFrame(() => document.documentElement.classList.remove("no-transitions"));
+      requestAnimationFrame(() => {
+        document.documentElement.classList.remove("no-transitions");
+      });
     }
   }, [resolvedTheme, disableTransitionOnChange]);
 
   useEffect(() => {
-    if (theme !== "system") return;
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const handler = () => applyThemeClass(mq.matches ? "dark" : "light");
+    const handler = (e: MediaQueryListEvent) => {
+      setSystemTheme(e.matches ? "dark" : "light");
+    };
+    setSystemTheme(mq.matches ? "dark" : "light");
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
-  }, [theme]);
+  }, []);
+
+  const value = useMemo(() => ({ theme, resolvedTheme, setTheme }), [theme, resolvedTheme, setTheme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   );

@@ -2,9 +2,9 @@
 
 import { useTranslations } from "next-intl";
 import type { Question } from "@/lib/store";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/_components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/_components/ui/radio-group";
+import { Textarea } from "@/_components/ui/textarea";
 
 interface QuestionRendererProps {
   question: Question;
