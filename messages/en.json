@@ -1,11 +1,11 @@
 {
   "app": {
-    "title": "testche — Online Testing Platform",
+    "title": "mindigo — Online Testing Platform",
     "description": "Create and take tests online"
   },
   "landing": {
     "header": {
-      "siteName": "testche",
+      "siteName": "mindigo",
       "home": "Home",
       "findTests": "Find Tests",
       "testimonials": "Testimonials",
@@ -17,7 +17,7 @@
       "badge": "Built for computer science educators",
       "heading1": "Create, share, and grade",
       "heading2": "online tests effortlessly",
-      "subtitle": "testche lets teachers build custom tests with code blocks, images, and point-based grading. Students join with a code — no account needed.",
+      "subtitle": "mindigo lets teachers build custom tests with code blocks, images, and point-based grading. Students join with a code — no account needed.",
       "createTest": "Create a Test",
       "takeTest": "Take a Test"
     },
@@ -40,7 +40,7 @@
     },
     "testimonials": {
       "heading": "Loved by educators",
-      "subtitle": "Hear what teachers using Testche every day have to say.",
+      "subtitle": "Hear what teachers using Mindigo every day have to say.",
       "items": [
         {
           "name": "Dr. Ivan Petrov",
@@ -80,8 +80,8 @@
     },
     "pages": {
       "howItWorks": {
-        "metaTitle": "How it Works — testche",
-        "metaDescription": "Learn how testche works. Create, share, and grade online tests in minutes.",
+        "metaTitle": "How it Works — mindigo",
+        "metaDescription": "Learn how mindigo works. Create, share, and grade online tests in minutes.",
         "step1Title": "1. Create a Test",
         "step1Desc": "Teachers build custom tests with code blocks, images, multiple choice, true/false, and open-answer questions. Set time limits, point values, and grade thresholds.",
         "step2Title": "2. Share the Code",
@@ -92,15 +92,15 @@
         "step4Desc": "Teachers get instant access to results, answer breakdowns, and auto-calculated grades. Review individual submissions or view the full class summary."
       },
       "about": {
-        "metaTitle": "About — testche",
-        "metaDescription": "testche is an online testing platform built for computer science educators and their students.",
-        "p1": "testche is an online testing platform built for computer science educators and their students. Create custom tests with code blocks, images, and point-based grading in minutes.",
+        "metaTitle": "About — mindigo",
+        "metaDescription": "mindigo is an online testing platform built for computer science educators and their students.",
+        "p1": "mindigo is an online testing platform built for computer science educators and their students. Create custom tests with code blocks, images, and point-based grading in minutes.",
         "p2": "Students join with a simple code — no account or sign-up required. The focus is on removing friction so teachers can assess understanding and students can focus on answering.",
-        "p3": "Built by Daniel Todorov, testche started as a tool to solve a real problem: making programming assessments easier to create, distribute, and grade."
+        "p3": "Built by Daniel Todorov, mindigo started as a tool to solve a real problem: making programming assessments easier to create, distribute, and grade."
       },
       "pricing": {
-        "metaTitle": "Pricing — testche",
-        "metaDescription": "testche is free for teachers. Create unlimited tests with code blocks, images, and point-based grading.",
+        "metaTitle": "Pricing — mindigo",
+        "metaDescription": "mindigo is free for teachers. Create unlimited tests with code blocks, images, and point-based grading.",
         "freeTitle": "Free",
         "freePrice": "$0",
         "free1": "Create unlimited tests",
@@ -115,28 +115,28 @@
         "pro4": "Priority support"
       },
       "contact": {
-        "metaTitle": "Contact — testche",
-        "metaDescription": "Get in touch with the testche team.",
+        "metaTitle": "Contact — mindigo",
+        "metaDescription": "Get in touch with the mindigo team.",
         "description": "Have a question, feedback, or want to report an issue? Reach out via email.",
-        "email": "hello@testche.app"
+        "email": "hello@mindigo.app"
       },
       "terms": {
-        "metaTitle": "Terms of Service — testche",
-        "metaDescription": "Terms of service for using testche.",
+        "metaTitle": "Terms of Service — mindigo",
+        "metaDescription": "Terms of service for using mindigo.",
         "s1Title": "1. Acceptance of Terms",
-        "s1Desc": "By using testche, you agree to these terms. If you do not agree, do not use the service.",
+        "s1Desc": "By using mindigo, you agree to these terms. If you do not agree, do not use the service.",
         "s2Title": "2. Use of Service",
-        "s2Desc": "testche provides an online platform for creating and taking tests. You may not use the service for any unlawful purpose or in violation of any applicable laws.",
+        "s2Desc": "mindigo provides an online platform for creating and taking tests. You may not use the service for any unlawful purpose or in violation of any applicable laws.",
         "s3Title": "3. Account Responsibility",
         "s3Desc": "Teachers are responsible for maintaining the confidentiality of their account and for all activities that occur under their account.",
         "s4Title": "4. Limitation of Liability",
-        "s4Desc": "testche is provided \"as is\" without warranty of any kind. The creators shall not be liable for any damages arising from the use of the service.",
+        "s4Desc": "mindigo is provided \"as is\" without warranty of any kind. The creators shall not be liable for any damages arising from the use of the service.",
         "s5Title": "5. Changes",
         "s5Desc": "We reserve the right to modify these terms at any time. Users will be notified of material changes."
       },
       "privacy": {
-        "metaTitle": "Privacy Policy — testche",
-        "metaDescription": "Privacy policy for testche.",
+        "metaTitle": "Privacy Policy — mindigo",
+        "metaDescription": "Privacy policy for mindigo.",
         "s1Title": "1. Information We Collect",
         "s1Desc": "We collect only the information necessary to provide the service: teacher account details (name, email) and student names for test submissions.",
         "s2Title": "2. How We Use Information",
@@ -146,12 +146,12 @@
         "s4Title": "4. Cookies",
         "s4Desc": "We use essential cookies for authentication and theme preferences. No tracking or advertising cookies are used.",
         "s5Title": "5. Contact",
-        "s5Desc": "For privacy-related inquiries, contact us at hello@testche.app."
+        "s5Desc": "For privacy-related inquiries, contact us at hello@mindigo.app."
       }
     }
   },
   "appHeader": {
-    "siteName": "testche",
+    "siteName": "mindigo",
     "joinTest": "Join Test",
     "dashboard": "Dashboard",
     "createTest": "Create Test",
@@ -167,7 +167,7 @@
     "welcomeStudent": "Welcome, {firstName}",
     "studentSubtitle": "Enter a test code to begin your exam.",
     "joinTest": "Join a Test",
-    "siteName": "testche",
+    "siteName": "mindigo",
     "tagline": "Online testing platform for teachers and students.",
     "imATeacher": "I'm a Teacher",
     "imAStudent": "I'm a Student"

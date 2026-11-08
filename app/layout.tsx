@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "testche — Online Testing Platform",
+  title: "mindigo — Online Testing Platform",
   description: "Create and take tests online",
 };
 

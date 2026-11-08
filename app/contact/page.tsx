@@ -20,7 +20,7 @@ export default function ContactPage() {
           <div className="space-y-6 text-muted-foreground leading-relaxed">
             <p>{t("description")}</p>
             <a
-              href="mailto:hello@testche.app"
+              href="mailto:hello@mindigo.app"
               className="inline-flex items-center gap-2 text-foreground underline underline-offset-4"
             >
               <Mail className="h-4 w-4" />

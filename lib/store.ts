@@ -93,6 +93,6 @@ export const useActiveTestStore = create<ActiveTestStore>()(
       },
       endSession: () => set({ session: null }),
     }),
-    { name: "testche-active-test" },
+    { name: "mindigo-active-test" },
   ),
 );
